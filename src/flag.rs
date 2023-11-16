@@ -38,7 +38,7 @@ impl Flags {
             }
         }
 
-        // If --output argument is not provided, set output file to 
+        // If --output argument is not provided, set output file to
         // be in the same folder as the input file with the name "output.csv"
         if self.output.is_empty() {
             let input_path = Path::new(&self.input);
