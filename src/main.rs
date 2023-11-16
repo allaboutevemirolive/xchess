@@ -31,7 +31,7 @@ pub fn process_args() -> Result<(), Box<dyn std::error::Error>> {
     // Set default output is same as the input's folder
     let mut f_writer = FileWriter::new(&flags.input, &flags.output);
 
-    PuzzleInfo::rating_filter(
+    PuzzleInfo::puzzle_iterator(
         &mut f_writer.input,
         &mut f_writer.output,
         flags
