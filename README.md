@@ -10,5 +10,8 @@ Chess utility for processing Lichess CSV Puzzle files.
 Example:
 
 ./xchess --input=/home/nemesis/Documents/Github/Focus/game/xchess/input/input.csv --output=/home/nemesis/Documents/Github/Focus/game/xchess/output/output.csv ----rating=1000
-
 ```
+
+Download Lichess Puzzle:
+
+https://database.lichess.org/#puzzles

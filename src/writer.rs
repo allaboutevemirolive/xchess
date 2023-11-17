@@ -31,7 +31,7 @@ impl FileWriter {
             .open(&output_path_buf)
             .unwrap_or_else(|_| panic!("Failed to create or open output file: {:?}", output_path));
 
-        let input_reader: BufReader<File> = BufReader::new(input_file);
+        let input_reader = BufReader::new(input_file);
         let output_writer = BufWriter::new(output_file);
 
         Self {

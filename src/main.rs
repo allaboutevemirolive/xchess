@@ -7,6 +7,8 @@ use flag::Flags;
 use std::env;
 use writer::FileWriter;
 
+// FIXME: Rewrite this so it will be library
+
 // FIXME
 // Add 'HELP_TEXT'
 
@@ -17,18 +19,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 pub fn process_args() -> Result<(), Box<dyn std::error::Error>> {
     // FIXME
-    let mut flags = Flags::new();
-    flags.processing_args(env::args().collect());
+    // let mut flags = Flags::new();
+    // flags.processing_args(env::args().collect());
 
     // DEBUG
-    // let flags = Flags {
-    //     input: "./input.csv".into(),
-    //     output: "./output.csv".into(),
-    //     rating_filter: 1000,
-    // };
+    let flags = Flags {
+        input: "input/input.csv".into(),
+        output: "input/output.csv".into(),
+        rating_filter: 1000,
+    };
 
-    // FIXME
-    // Set default output is same as the input's folder
     let mut f_writer = FileWriter::new(&flags.input, &flags.output);
 
     PuzzleInfo::puzzle_iterator(
