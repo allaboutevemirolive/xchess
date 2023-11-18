@@ -1,15 +1,34 @@
+pub mod rating;
+
 use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 
-#[derive(Default)]
-enum RatingFilter {
-    #[default]
-    LowerLimit,
-    UpperLimit,
-    /// Rating filter that is between lower and upper limit
-    BetweenLimits,
-}
+/*
+
+Puzzle ID: 00YeV
+FEN: r2qr1k1/ppp2ppp/2nbp3/5b2/3P4/2P1BN2/P1PQBPPP/3R1RK1 b - - 7 11
+Moves: d8f6 e3g5 f6g6 f3h4 h7h6 h4g6
+Rating: 1385
+Rating Deviation: 75
+Popularity: 80
+Number of Plays: 159
+Themes: crushing long middlegame trappedPiece
+Game URL: https://lichess.org/wqxB0iyn/black#22
+Opening Tags: Scandinavian_Defense Scandinavian_Defense_Marshall_Variation
+
+
+Do filter for this:
+
+Rating: 1385
+Rating Deviation: 75
+Popularity: 80
+Number of Plays: 159
+Themes: crushing long middlegame trappedPiece
+
+*/
+
+
 
 #[derive(Debug)]
 pub struct PuzzleInfo {
@@ -57,11 +76,11 @@ impl PuzzleInfo {
             let fields: Vec<&str> = line.split(',').collect();
             let puzzle_info = PuzzleInfo::new(&fields);
 
-            // puzzle_info.pgn_rating_filter(rating_filter, writer)?;
+            puzzle_info.rating_filter(rating_filter, writer)?;
 
             // puzzle_info.unique_themes(&mut unique_themes);
 
-            puzzle_info.puzzle_info_output(writer)?;
+            // puzzle_info.puzzle_info_output(writer)?;
         }
 
         // Self::print_unique_themes(unique_themes, writer)?;
@@ -69,51 +88,51 @@ impl PuzzleInfo {
         Ok(())
     }
 
-    fn pgn_rating_filter(
-        &self,
-        rating_filter: i32,
-        writer: &mut BufWriter<File>,
-    ) -> std::result::Result<(), std::io::Error> {
-        let ratings = self.parse_rating().unwrap_or(0);
-        let default_filter = Default::default();
+    // fn rating_filter(
+    //     &self,
+    //     rating_filter: i32,
+    //     writer: &mut BufWriter<File>,
+    // ) -> std::result::Result<(), std::io::Error> {
+    //     let ratings = self.parse_rating().unwrap_or(0);
+    //     let default_filter = Default::default();
 
-        match default_filter {
-            // We want rating that is more than rating_filter
-            // rating_filter is a lower limit
-            RatingFilter::LowerLimit => {
-                if ratings > rating_filter {
-                    writeln!(writer, "[Event \"{}\"]", self.puzzle_id)?;
-                    writeln!(writer, "[FEN \"{}\"]", self.fen)?;
-                    writeln!(writer, "[White \"{}\"]", self.rating)?;
-                    writeln!(writer, "[WhiteElo \"{}\"]", self.rating_deviation)?;
-                    writeln!(writer, "[Popularity \"{}\"]", self.popularity)?;
-                    writeln!(writer, "[BlackElo \"{}\"]", self.nb_plays)?;
-                    writeln!(writer, "[Black \"{}\"]", self.themes)?;
-                    writeln!(writer, "{} 1-0\n", self.moves)?;
-                }
-            }
+    //     match default_filter {
+    //         // We want rating that is more than rating_filter
+    //         // rating_filter is a lower limit
+    //         RatingFilter::LowerLimit => {
+    //             if ratings > rating_filter {
+    //                 writeln!(writer, "[Event \"{}\"]", self.puzzle_id)?;
+    //                 writeln!(writer, "[FEN \"{}\"]", self.fen)?;
+    //                 writeln!(writer, "[White \"{}\"]", self.rating)?;
+    //                 writeln!(writer, "[WhiteElo \"{}\"]", self.rating_deviation)?;
+    //                 writeln!(writer, "[Popularity \"{}\"]", self.popularity)?;
+    //                 writeln!(writer, "[BlackElo \"{}\"]", self.nb_plays)?;
+    //                 writeln!(writer, "[Black \"{}\"]", self.themes)?;
+    //                 writeln!(writer, "{} 1-0\n", self.moves)?;
+    //             }
+    //         }
 
-            // We want rating that is less than rating_filter
-            // rating_filter is an upper limit
-            RatingFilter::UpperLimit => {
-                if ratings < rating_filter {
-                    writeln!(writer, "[Event \"{}\"]", self.puzzle_id)?;
-                    writeln!(writer, "[FEN \"{}\"]", self.fen)?;
-                    writeln!(writer, "[White \"{}\"]", self.rating)?;
-                    writeln!(writer, "[WhiteElo \"{}\"]", self.rating_deviation)?;
-                    writeln!(writer, "[Popularity \"{}\"]", self.popularity)?;
-                    writeln!(writer, "[BlackElo \"{}\"]", self.nb_plays)?;
-                    writeln!(writer, "[Black \"{}\"]", self.themes)?;
-                    writeln!(writer, "{} 1-0\n", self.moves)?;
-                }
-            }
+    //         // We want rating that is less than rating_filter
+    //         // rating_filter is an upper limit
+    //         RatingFilter::UpperLimit => {
+    //             if ratings < rating_filter {
+    //                 writeln!(writer, "[Event \"{}\"]", self.puzzle_id)?;
+    //                 writeln!(writer, "[FEN \"{}\"]", self.fen)?;
+    //                 writeln!(writer, "[White \"{}\"]", self.rating)?;
+    //                 writeln!(writer, "[WhiteElo \"{}\"]", self.rating_deviation)?;
+    //                 writeln!(writer, "[Popularity \"{}\"]", self.popularity)?;
+    //                 writeln!(writer, "[BlackElo \"{}\"]", self.nb_plays)?;
+    //                 writeln!(writer, "[Black \"{}\"]", self.themes)?;
+    //                 writeln!(writer, "{} 1-0\n", self.moves)?;
+    //             }
+    //         }
 
-            // FIXME
-            RatingFilter::BetweenLimits => {}
-        }
+    //         // FIXME
+    //         RatingFilter::BetweenLimits => {}
+    //     }
 
-        Ok(())
-    }
+    //     Ok(())
+    // }
 
     pub fn puzzle_info_output(
         &self,
@@ -134,9 +153,6 @@ impl PuzzleInfo {
         Ok(())
     }
 
-    pub fn parse_rating(&self) -> std::result::Result<i32, std::num::ParseIntError> {
-        self.rating.parse()
-    }
 
     pub fn is_same_puzzle(&self, other: &PuzzleInfo) -> bool {
         self.puzzle_id == other.puzzle_id
