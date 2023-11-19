@@ -17,9 +17,7 @@ pub struct Rating {
 
 impl Rating {
     pub fn new(puzzle_info: PuzzleInfo) -> Self {
-        Rating {
-            puzzle_info,
-        }
+        Rating { puzzle_info }
     }
 
     pub fn rating_filter(

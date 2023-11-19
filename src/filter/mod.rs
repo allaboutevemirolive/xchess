@@ -1,3 +1,4 @@
+pub mod op;
 pub mod rating;
 pub mod theme;
 
@@ -5,6 +6,7 @@ use std::collections::HashSet;
 use std::fs::File;
 use std::io::{BufRead, BufReader, BufWriter, Write};
 
+use self::op::OpeningTags;
 use self::rating::Rating;
 use self::theme::Themes;
 
@@ -29,6 +31,8 @@ Rating Deviation: 75
 Popularity: 80
 Number of Plays: 159
 Themes: crushing long middlegame trappedPiece
+Opening Tags: Scandinavian_Defense Scandinavian_Defense_Marshall_Variation
+
 
 */
 
@@ -78,6 +82,8 @@ impl PuzzleInfo {
     ) -> std::result::Result<(), std::io::Error> {
         let mut unique_themes: HashSet<String> = HashSet::new();
 
+        let mut unique_opening_tags: HashSet<String> = HashSet::new();
+
         for line in reader.lines() {
             let line = match line {
                 Ok(line) => line,
@@ -90,13 +96,18 @@ impl PuzzleInfo {
             // let rating_info = Rating::new(puzzle_info);
             // rating_info.rating_filter(rating_filter, writer)?;
 
-            let theme_info = Themes::new(puzzle_info);
-            theme_info.unique_themes(&mut unique_themes);
+            let opening_tags = OpeningTags::new(puzzle_info);
+            opening_tags.get_unique_opening_tags(&mut unique_opening_tags);
+
+            // let theme_info = Themes::new(puzzle_info);
+            // theme_info.get_unique_themes(&mut unique_themes);
 
             // puzzle_info.puzzle_info_output(writer)?;
         }
 
-        Themes::print_unique_themes(unique_themes, writer)?;
+        // Themes::print_unique_themes(unique_themes, writer)?;
+
+        OpeningTags::print_unique_opening_tags(unique_opening_tags, writer)?;
 
         Ok(())
     }

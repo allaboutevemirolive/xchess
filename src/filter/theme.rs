@@ -10,12 +10,10 @@ pub struct Themes {
 
 impl Themes {
     pub fn new(puzzle_info: PuzzleInfo) -> Self {
-        Themes {
-            puzzle_info,
-        }
+        Themes { puzzle_info }
     }
 
-    pub fn unique_themes(&self, unique_themes: &mut HashSet<String>) {
+    pub fn get_unique_themes(&self, unique_themes: &mut HashSet<String>) {
         let themes: Vec<&str> = self.puzzle_info.themes.split_whitespace().collect();
 
         for theme in themes {
